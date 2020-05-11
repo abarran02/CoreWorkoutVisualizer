@@ -15,9 +15,9 @@
 			<div>← Back to Main Page</div>
 		</a>
 
-		<script src="js/presets.js" type="text/javascript"></script>
 		<script src="js/jquery.min.js" type="text/javascript"></script>
 		<script src="js/js.cookie-2.2.0.min.js" type="text/javascript"></script>
+		<script src="js/workout.js" type="text/javascript"></script>
 		<script>
 			function loadCookie() {
 				try {
@@ -29,39 +29,11 @@
 					};
 				}
 				var wkElement = document.getElementById("workout-list");
-
-				var x;
-				for (x of workout.steps) {
-					var newStep = document.createElement("div");
-					newStep.classList.add("stepContainer");
-					createDiv(x.name, "step", newStep);
-
-					var newRep = document.createElement("div");
-					var wkdesc;
-					if (x.hasOwnProperty("time")) {
-						wkdesc = x.time;
-					} else {
-						if (typeof(x.reps) === "number") {
-							wkdesc = x.reps + " reps";
-						} else {
-							wkdesc = x.reps;
-						}
-					}
-					createDiv(wkdesc, "reps", newStep);
-					wkElement.appendChild(newStep);
-				}
+				renderWorkout(workout.steps, wkElement, builder=true);
 
 				if (workout.steps.length == 0) {
 					addStep();
 				}
-			}
-
-			function createDiv(text, divClass, parentElement) {
-				var newDiv = document.createElement("div");
-				newDiv.innerHTML = text;
-				newDiv.classList.add(divClass);
-				newDiv.contentEditable = true;
-				parentElement.appendChild(newDiv);
 			}
 
 			function addStep() {
@@ -70,6 +42,7 @@
 
 				createDiv("Step Name", "step", newStep);
 				createDiv("Reps/Time", "reps", newStep);
+				createDelButton(newStep);
 
 				var wkElement = document.getElementById("workout-list");
 				wkElement.appendChild(newStep);

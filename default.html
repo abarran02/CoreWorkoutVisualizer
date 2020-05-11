@@ -31,17 +31,13 @@
 		<p id="step-name" class="info"></p>
 		<p id="time"></p>
 		<p id="next-step" class="info"></p>
-
-<!-- 		<div class="halfContainer">
-			<div class="halfButton" onclick="parseWorkout()">Start Workout</div>
-			<div class="halfButton">​</div>
-		</div> -->
+		
 		<div id="button1" onclick="parseWorkout()" class="fullButton noselect">Start Workout</div>
 
-		<script src="js/presets.js" type="text/javascript"></script>
 		<script src="js/jquery.min.js" type="text/javascript"></script>
 		<script src="js/quickfit.js" type="text/javascript"></script>
 		<script src="js/js.cookie-2.2.0.min.js" type="text/javascript"></script>
+		<script src="js/workout.js" type="text/javascript"></script>
 		<script>
 			function getWorkout() {
 				var buildLink = document.getElementById("link-button");
@@ -65,33 +61,10 @@
 				var wkElement = document.getElementById("workout-list");
 				wkElement.style.display = "block";
 
-				$("div.step").remove();
-				$("div.reps").remove();
+				$("div.stepContainer").remove();
 				
 				var workout = getWorkout();
-				var x;
-				for (x of workout.steps) {
-					var newStep =  document.createElement("div");
-					newStep.innerHTML = x.name;
-					newStep.classList.add("step");
-					wkElement.appendChild(newStep);
-
-					var newRep = document.createElement("div");
-					var wkdesc;
-					if (x.hasOwnProperty("time")) {
-						wkdesc = x.time + " seconds";
-					} else {
-						if (typeof(x.reps) === "number") {
-								wkdesc = x.reps + " reps";
-						} else {
-								wkdesc = x.reps;
-						}
-					}
-
-					newRep.innerHTML = wkdesc;
-					newRep.classList.add("reps");
-					document.getElementById("workout-list").appendChild(newRep);
-				}
+				renderWorkout(workout.steps, wkElement);
 			}
 
 			function getRadioVal(form, name) {
