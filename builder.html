@@ -40,9 +40,10 @@
 				var newStep = document.createElement("div");
 				newStep.classList.add("stepContainer");
 
-				createDiv("Step Name", "step", newStep);
-				createDiv("Reps/Time", "reps", newStep);
+				createDiv("Step Name", "step", newStep, editable=true);
+				createDiv("Length", "reps", newStep, editable=true);
 				createDelButton(newStep);
+				createWorkoutForm(null, newStep);
 
 				var wkElement = document.getElementById("workout-list");
 				wkElement.appendChild(newStep);
@@ -58,16 +59,21 @@
 					var children = parents.childNodes;
 					var origText = $(children[1]).text();
 					var tryInt = parseInt(origText);
-					if (origText == tryInt) {
-						workout.steps.push({
-							"name":$(children[0]).text(),
-							"time":tryInt
-						});
-					} else {
-						workout.steps.push({
-							"name":$(children[0]).text(),
-							"reps":origText
-						});
+					switch (getRadioVal(children[3], "workout")) {
+						case "time":
+							workout.steps.push({
+								"name":$(children[0]).text(),
+								"time":tryInt
+							});
+							break;
+						case "reps":
+							if (origText == tryInt) {
+								origText = tryInt;
+							}
+							workout.steps.push({
+								"name":$(children[0]).text(),
+								"reps":origText
+							});
 					}
 				}
 				Cookies.set('customWorkout', workout, { expires: 365 });

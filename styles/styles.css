@@ -113,3 +113,16 @@ a:visited, a:link {
 	padding: 6px;
 	margin-bottom: 8px;
 }
+
+.builderRadio {
+	margin: 0;
+	overflow: hidden;
+	height: 30px;
+	font-size: 20px;
+}
+
+.radio-label {
+	font-size: small;
+	padding-left: 16px;
+	padding-right: 16px;
+}

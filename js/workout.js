@@ -35,6 +35,19 @@ var presets = [
 	}
 ]
 
+function getRadioVal(form, name) {
+	var val;
+	var radios = form.elements[name];
+	// loop through list of radio buttons
+	for (var i=0, len=radios.length; i<len; i++) {
+		if (radios[i].checked) {
+			val = radios[i].value;
+			break;
+		}
+	}
+	return val;
+}
+
 function createDiv(text, divClass, parentElement, editable=false) {
 	var newDiv = document.createElement("div");
 	newDiv.innerHTML = text;
@@ -43,6 +56,7 @@ function createDiv(text, divClass, parentElement, editable=false) {
 		newDiv.contentEditable = true;
 	}
 	parentElement.appendChild(newDiv);
+	return newDiv;
 }
 
 function createDelButton(parentElement) {
@@ -55,12 +69,48 @@ function createDelButton(parentElement) {
 	parentElement.appendChild(newButton);
 }
 
+function createRadio(name, value, parentElement) {
+	var newInput = document.createElement("input");
+	newInput.setAttribute("type", "radio")
+	newInput.setAttribute("name", name);
+	newInput.setAttribute("value", value);
+	parentElement.appendChild(newInput);
+	return newInput;
+}
+
+function radioLabel(text, name, value, parentElement, checked=false) {
+	var newLabel = document.createElement("label");
+	newLabel.innerHTML = text;
+	newLabel.style = "position: relative; top: -36px;"
+	newLabel.classList.add("noselect");
+	newLabel.classList.add("radio-label");
+	var radio = createRadio(name, value, newLabel);
+	if (checked) {
+		radio.checked = true;
+	}
+	parentElement.appendChild(newLabel);
+}
+
+function createWorkoutForm(stepData, parentElement) {
+	var newForm = document.createElement("form");
+	newForm.style = "height: 30px";
+
+	if (stepData === null || stepData.hasOwnProperty("time")) {
+		radioLabel("Time (seconds)", "workout", "time", newForm, checked=true);
+		radioLabel("Reps", "workout", "reps", newForm);
+	} else {
+		radioLabel("Time (seconds)", "workout", "time", newForm);
+		radioLabel("Reps", "workout", "reps", newForm, checked=true);
+	}
+
+	parentElement.appendChild(newForm);
+}
+
 function renderWorkout(steps, wkElement, builder=false) {
 	var x;
 	for (x of steps) {
-		var newStep = document.createElement("div");
-		newStep.classList.add("stepContainer");
-		createDiv(x.name, "step", newStep);
+		var newStep = createDiv("", "stepContainer", wkElement)
+		var stepName = createDiv(x.name, "step", newStep);
 
 		var wkdesc;
 		if (x.hasOwnProperty("time")) {
@@ -70,16 +120,19 @@ function renderWorkout(steps, wkElement, builder=false) {
 				wkdesc = x.time + " seconds"
 			}
 		} else {
-			if (typeof(x.reps) === "number") {
+			if (typeof(x.reps) === "number" && !(builder)) {
 				wkdesc = x.reps + " reps";
 			} else {
 				wkdesc = x.reps;
 			}
 		}
-		createDiv(wkdesc, "reps", newStep);
+		var reps = createDiv(wkdesc, "reps", newStep);
 
 		if (builder) {
-			createDelButton(newStep)
+			createDelButton(newStep);
+			createWorkoutForm(x, newStep);
+			stepName.contentEditable = true;
+			reps.contentEditable = true;
 		}
 		wkElement.appendChild(newStep);
 	}

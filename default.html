@@ -67,19 +67,6 @@
 				renderWorkout(workout.steps, wkElement);
 			}
 
-			function getRadioVal(form, name) {
-				var val;
-				var radios = form.elements[name];
-				// loop through list of radio buttons
-				for (var i=0, len=radios.length; i<len; i++) {
-					if (radios[i].checked) {
-						val = radios[i].value;
-						break;
-					}
-				}
-				return val;
-			}
-
 			async function parseWorkout() {
 				var workout = getWorkout();
 				document.getElementById("workout-selector").style.display = "none";
